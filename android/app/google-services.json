@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1050477853828",
+    "firebase_url": "https://cmds-63f1a.firebaseio.com",
+    "project_id": "cmds-63f1a",
+    "storage_bucket": "cmds-63f1a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1050477853828:android:c2afb85217a1d5778116d1",
+        "android_client_info": {
+          "package_name": "cmds.ferreira.com.br.cmds"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1050477853828-m634vdprv5jg3v0l3eclvm5hf7f9m6a1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "cmds.ferreira.com.br.cmds",
+            "certificate_hash": "91681d7e7f909ce67ce316fad5ab49472dcd6997"
+          }
+        },
+        {
+          "client_id": "1050477853828-j2pf4djruu45dt47aq02bndmlafcq57i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCnvKPd86OSqv-dLW23SGRImYUZm5U7N0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1050477853828-j2pf4djruu45dt47aq02bndmlafcq57i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
