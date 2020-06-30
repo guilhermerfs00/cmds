@@ -1,4 +1,4 @@
-import 'package:cmds/screens/home_screen.dart';
+import 'package:cmds/screens/welcome-screen.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -10,9 +10,9 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primaryColor: Color(0xffff6101),
+        primaryColor: Color(0xFF5036D5),
       ),
-      home: HomeScreen(),
+      home: WelcomeScreen(),
     );
   }
 }

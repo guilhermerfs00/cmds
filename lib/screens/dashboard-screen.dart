@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class HomeScreen extends StatefulWidget {
+class DashBoardScreen extends StatefulWidget {
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _DashBoardScreenState createState() => _DashBoardScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _DashBoardScreenState extends State<DashBoardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
               icon: Icon(FontAwesomeIcons.chartLine),
               onPressed: () {
-                //
+                print('ola');
               }),
         ],
       ),
