@@ -249,8 +249,9 @@ class _LoginScreenState extends State<LoginScreen> {
       appBar: AppBar(
         backgroundColor: Color(0xFF73AEF5),
         elevation: 0,
+        centerTitle: true,
         title: Text(
-          'Login',
+          'INICIAR SESSÃO',
           style: TextStyle(
             color: Colors.white,
             fontFamily: 'OpenSans',
@@ -287,20 +288,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   physics: AlwaysScrollableScrollPhysics(),
                   padding: EdgeInsets.symmetric(
                     horizontal: 40.0,
-                    vertical: 120.0,
+                    vertical: 30.0,
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text(
-                        'Iniciar sessão',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'OpenSans',
-                          fontSize: 30.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
                       SizedBox(height: 30.0),
                       _buildEmail(),
                       SizedBox(
