@@ -1,5 +1,5 @@
 import 'package:cmds/global.dart';
-import 'package:cmds/screens/dashboard-screen.dart';
+import 'package:cmds/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -61,9 +61,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 Container(
                   alignment: Alignment.centerRight,
                   child: FlatButton(
-                    onPressed: () => Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                            builder: (context) => DashBoardScreen())),
+                    onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => LoginScreen())),
                     child: Text(
                       'Pular',
                       style: TextStyle(
@@ -212,15 +211,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         ),
       ),
       bottomSheet: _currentPage == _numPages - 1
-          ? Container(
-              height: 100.0,
-              width: double.infinity,
-              color: Colors.white,
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (context) => DashBoardScreen()));
-                },
+          ? InkWell(
+              onTap: () => Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => LoginScreen())),
+              child: Container(
+                height: 100.0,
+                width: double.infinity,
+                color: Colors.white,
                 child: Center(
                   child: Padding(
                     padding: EdgeInsets.only(bottom: 30.0),
