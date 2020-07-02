@@ -1,7 +1,10 @@
 import 'package:cmds/global.dart';
 import 'package:cmds/screens/dashboard-screen.dart';
+import 'package:cmds/screens/signup_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -9,142 +12,218 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _formKey = GlobalKey<FormState>();
   bool _rememberMe = false;
 
-  Widget _buildEmail() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Text(
-          'Email',
-          style: kLabelStyle,
-        ),
-        SizedBox(height: 10.0),
-        Container(
-          alignment: Alignment.centerLeft,
-          decoration: kBoxDecorationStyle,
-          height: 60.0,
-          child: TextField(
-            keyboardType: TextInputType.emailAddress,
-            style: TextStyle(
-              color: Colors.white,
-              fontFamily: 'OpenSans',
-            ),
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.only(top: 14.0),
-              prefixIcon: Icon(
-                Icons.email,
-                color: Colors.white,
-              ),
-              hintText: 'Digite seu Email',
-              hintStyle: kHintTextStyle,
-            ),
-          ),
-        ),
-      ],
-    );
+  FirebaseUser _currentUser;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    super.initState();
+
+    FirebaseAuth.instance.onAuthStateChanged.listen((user) {
+      _currentUser = user;
+    });
   }
 
-  Widget _buildPassword() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Text(
-          'Senha',
-          style: kLabelStyle,
-        ),
-        SizedBox(height: 10.0),
-        Container(
-          alignment: Alignment.centerLeft,
-          decoration: kBoxDecorationStyle,
-          height: 60.0,
-          child: TextField(
-            obscureText: true,
-            style: TextStyle(
-              color: Colors.white,
-              fontFamily: 'OpenSans',
-            ),
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.only(top: 14.0),
-              prefixIcon: Icon(
-                Icons.lock,
-                color: Colors.white,
-              ),
-              hintText: 'Digite sua senha',
-              hintStyle: kHintTextStyle,
-            ),
-          ),
-        ),
-      ],
-    );
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+
+  Future<FirebaseUser> _getUser() async {
+    if (_currentUser != null) {
+      return _currentUser;
+    }
+
+    try {
+      final GoogleSignInAccount googleSignInAccount =
+          await googleSignIn.signIn();
+      final GoogleSignInAuthentication googleSignInAuthentication =
+          await googleSignInAccount.authentication;
+
+      AuthCredential credential = GoogleAuthProvider.getCredential(
+          idToken: googleSignInAuthentication.idToken,
+          accessToken: googleSignInAuthentication.accessToken);
+      final AuthResult authResult =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+
+      final FirebaseUser user = authResult.user;
+
+      return user;
+    } catch (e) {
+      return null;
+    }
   }
 
-  Widget _buildForgotPassword() {
-    return Container(
-      alignment: Alignment.centerRight,
-      child: FlatButton(
-        onPressed: () => print('Forgot Password Button Pressed'),
-        padding: EdgeInsets.only(right: 0.0),
-        child: Text(
-          'Esqueceu a senha ?',
-          style: kLabelStyle,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildRememberMe() {
-    return Container(
-      height: 20.0,
-      child: Row(
+  Widget _buildForm() {
+    return Form(
+      key: _formKey,
+      //EMAIL
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Theme(
-            data: ThemeData(unselectedWidgetColor: Colors.white),
-            child: Checkbox(
-              value: _rememberMe,
-              checkColor: Colors.green,
-              activeColor: Colors.white,
-              onChanged: (value) {
-                setState(() {
-                  _rememberMe = value;
-                });
-              },
-            ),
-          ),
           Text(
-            'Lembre de mim',
+            'Email',
             style: kLabelStyle,
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildLogin() {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 25.0),
-      width: double.infinity,
-      child: RaisedButton(
-        elevation: 5.0,
-        onPressed: () => Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => DashBoardScreen())),
-        padding: EdgeInsets.all(15.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        color: Colors.white,
-        child: Text(
-          'Entrar',
-          style: TextStyle(
-            color: Color(0xFF527DAA),
-            letterSpacing: 1.5,
-            fontSize: 18.0,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'OpenSans',
+          SizedBox(height: 10.0),
+          Container(
+            alignment: Alignment.centerLeft,
+            decoration: kBoxDecorationStyle,
+            height: 60.0,
+            child: TextFormField(
+              keyboardType: TextInputType.emailAddress,
+              validator: (text) {
+                if (text.isEmpty || text.contains('@')) return "Email invalido";
+              },
+              style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'OpenSans',
+              ),
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.only(top: 14.0),
+                prefixIcon: Icon(
+                  Icons.email,
+                  color: Colors.white,
+                ),
+                hintText: 'Digite seu Email',
+                hintStyle: kHintTextStyle,
+              ),
+            ),
           ),
-        ),
+          SizedBox(
+            height: 30.0,
+          ),
+          //SENHA
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                'Senha',
+                style: kLabelStyle,
+              ),
+              SizedBox(height: 10.0),
+              Container(
+                alignment: Alignment.centerLeft,
+                decoration: kBoxDecorationStyle,
+                height: 60.0,
+                child: TextFormField(
+                  obscureText: true,
+                  validator: (text) {
+                    if (text.isEmpty || text.length < 6) {
+                      return "Senha inválida";
+                    }
+                  },
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'OpenSans',
+                  ),
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.only(top: 14.0),
+                    prefixIcon: Icon(
+                      Icons.lock,
+                      color: Colors.white,
+                    ),
+                    hintText: 'Digite sua senha',
+                    hintStyle: kHintTextStyle,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          //ESQUECI A SENHA
+          Container(
+            alignment: Alignment.centerRight,
+            child: FlatButton(
+              onPressed: () => print('Forgot Password Button Pressed'),
+              padding: EdgeInsets.only(right: 0.0),
+              child: Text(
+                'Esqueceu a senha ?',
+                style: kLabelStyle,
+              ),
+            ),
+          ),
+          //LEMBRE DE MIM
+          Container(
+            height: 20.0,
+            child: Row(
+              children: <Widget>[
+                Theme(
+                  data: ThemeData(unselectedWidgetColor: Colors.white),
+                  child: Checkbox(
+                    value: _rememberMe,
+                    checkColor: Colors.green,
+                    activeColor: Colors.white,
+                    onChanged: (value) {
+                      setState(() {
+                        _rememberMe = value;
+                      });
+                    },
+                  ),
+                ),
+                Text(
+                  'Lembre de mim',
+                  style: kLabelStyle,
+                ),
+              ],
+            ),
+          ),
+          //BOTÃO DE ENTRAR
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 25.0),
+            width: double.infinity,
+            child: RaisedButton(
+              elevation: 5.0,
+              onPressed: () {
+                if (_formKey.currentState.validate()) {}
+              },
+              padding: EdgeInsets.all(15.0),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
+              ),
+              color: Colors.white,
+              child: Text(
+                'Entrar',
+                style: TextStyle(
+                  color: Color(0xFF527DAA),
+                  letterSpacing: 1.5,
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'OpenSans',
+                ),
+              ),
+            ),
+          ),
+
+          //BOTÃO DE CRIAR CONTA
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 25.0),
+            width: double.infinity,
+            child: RaisedButton(
+              elevation: 5.0,
+              onPressed: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => SignUpScreen()));
+              },
+              padding: EdgeInsets.all(15.0),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
+              ),
+              color: Colors.white,
+              child: Text(
+                'Criar conta',
+                style: TextStyle(
+                  color: Color(0xFF527DAA),
+                  letterSpacing: 1.5,
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'OpenSans',
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -205,7 +284,21 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
           _buildSocial(
-            () => print('Logar com o google'),
+            () async {
+              final FirebaseUser user = await _getUser();
+              if (user == null) {
+                _scaffoldKey.currentState.showSnackBar(
+                  SnackBar(
+                    content:
+                        Text('Não foi possível fazer o login. Tente novamente'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              } else {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => DashBoardScreen()));
+              }
+            },
             AssetImage(
               'assets/images/google.jpg',
             ),
@@ -215,37 +308,10 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildSignup() {
-    return GestureDetector(
-      onTap: () => print('Sign Up Button Pressed'),
-      child: RichText(
-        text: TextSpan(
-          children: [
-            TextSpan(
-              text: 'Não tem conta ? ',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18.0,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            TextSpan(
-              text: 'Criar conta',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         backgroundColor: Color(0xFF73AEF5),
         elevation: 0,
@@ -294,17 +360,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       SizedBox(height: 30.0),
-                      _buildEmail(),
-                      SizedBox(
-                        height: 30.0,
-                      ),
-                      _buildPassword(),
-                      _buildForgotPassword(),
-                      _buildRememberMe(),
-                      _buildLogin(),
+                      _buildForm(),
                       _buildSignIn(),
                       _buildSocialRow(),
-                      _buildSignup(),
                     ],
                   ),
                 ),

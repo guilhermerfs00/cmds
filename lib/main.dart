@@ -1,3 +1,4 @@
+import 'package:cmds/screens/login_screen.dart';
 import 'package:cmds/screens/welcome-screen.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +13,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: Color(0xFF5036D5),
       ),
-      home: WelcomeScreen(),
+      home: LoginScreen(),
     );
   }
 }
