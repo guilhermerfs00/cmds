@@ -5,6 +5,7 @@ import 'package:cmds/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:flutter/cupertino.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -15,43 +16,42 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passController = TextEditingController();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-
   final _formKey = GlobalKey<FormState>();
-  bool _rememberMe = false;
-
-  Widget _buildSocial(Function onTap, AssetImage logo) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 60.0,
-        width: 60.0,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black26,
-              offset: Offset(0, 2),
-              blurRadius: 6.0,
-            ),
-          ],
-          image: DecorationImage(
-            image: logo,
-          ),
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
+    Widget _buildSocial(Function onTap, AssetImage logo) {
+      return GestureDetector(
+        onTap: onTap,
+        child: Container(
+          height: 60.0,
+          width: 60.0,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black26,
+                offset: Offset(0, 2),
+                blurRadius: 6.0,
+              ),
+            ],
+            image: DecorationImage(
+              image: logo,
+            ),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         backgroundColor: Color(0xFF73AEF5),
         elevation: 0,
         centerTitle: true,
         title: Text(
-          'INICIAR SESSÃO',
+          'CRIAR CONTA',
           style: TextStyle(
             color: Colors.white,
             fontFamily: 'OpenSans',
@@ -95,7 +95,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         physics: AlwaysScrollableScrollPhysics(),
                         padding: EdgeInsets.symmetric(
                           horizontal: 40.0,
-                          vertical: 30.0,
                         ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -103,15 +102,17 @@ class _LoginScreenState extends State<LoginScreen> {
                             SizedBox(height: 30.0),
                             Form(
                               key: _formKey,
-                              //EMAIL
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
+                                  SizedBox(
+                                    height: 10.0,
+                                  ),
+                                  //Email
                                   Text(
                                     'Email',
                                     style: kLabelStyle,
                                   ),
-                                  SizedBox(height: 10.0),
                                   Container(
                                     alignment: Alignment.centerLeft,
                                     decoration: kBoxDecorationStyle,
@@ -187,60 +188,21 @@ class _LoginScreenState extends State<LoginScreen> {
                                       ),
                                     ],
                                   ),
-                                  //ESQUECI A SENHA
-                                  Container(
-                                    alignment: Alignment.centerRight,
-                                    child: FlatButton(
-                                      onPressed: () => print(
-                                          'Forgot Password Button Pressed'),
-                                      padding: EdgeInsets.only(right: 0.0),
-                                      child: Text(
-                                        'Esqueceu a senha ?',
-                                        style: kLabelStyle,
-                                      ),
-                                    ),
-                                  ),
-                                  //LEMBRE DE MIM
-                                  Container(
-                                    height: 20.0,
-                                    child: Row(
-                                      children: <Widget>[
-                                        Theme(
-                                          data: ThemeData(
-                                              unselectedWidgetColor:
-                                                  Colors.white),
-                                          child: Checkbox(
-                                            value: _rememberMe,
-                                            checkColor: Colors.green,
-                                            activeColor: Colors.white,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                _rememberMe = value;
-                                              });
-                                            },
-                                          ),
-                                        ),
-                                        Text(
-                                          'Lembre de mim',
-                                          style: kLabelStyle,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
                                   //BOTÃO DE ENTRAR
                                   Container(
                                     padding:
-                                        EdgeInsets.symmetric(vertical: 25.0),
+                                        EdgeInsets.symmetric(vertical: 20.0),
                                     width: double.infinity,
                                     child: RaisedButton(
                                       elevation: 5.0,
                                       onPressed: () {
-                                        if (_formKey.currentState.validate()) {}
-                                        model.signIn(
-                                            email: _emailController.text,
-                                            pass: _passController.text,
-                                            onSuccess: _onSuccess,
-                                            onFail: _onFail);
+                                        if (_formKey.currentState.validate()) {
+                                          model.signIn(
+                                              email: _emailController.text,
+                                              pass: _passController.text,
+                                              onSuccess: _onSuccess,
+                                              onFail: _onFail);
+                                        }
                                       },
                                       padding: EdgeInsets.all(15.0),
                                       shape: RoundedRectangleBorder(
@@ -264,7 +226,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   //BOTÃO DE CRIAR CONTA
                                   Container(
                                     padding:
-                                        EdgeInsets.symmetric(vertical: 25.0),
+                                        EdgeInsets.symmetric(vertical: 5.0),
                                     width: double.infinity,
                                     child: RaisedButton(
                                       elevation: 5.0,
@@ -354,7 +316,8 @@ class _LoginScreenState extends State<LoginScreen> {
   void _onFail() {
     _scaffoldKey.currentState.showSnackBar(SnackBar(
       content: Text(
-        'Falha ao entrar !',
+        'Login ou senha inválido',
+        textAlign: TextAlign.center,
       ),
       backgroundColor: Colors.redAccent,
       duration: Duration(seconds: 2),

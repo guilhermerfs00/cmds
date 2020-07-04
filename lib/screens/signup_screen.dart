@@ -199,7 +199,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       ),
                                     ],
                                   ),
-                                  //BOTÃO DE ENTRAR
+                                  //BOTÃO DE CRIAR CONTA
                                   Container(
                                     padding:
                                         EdgeInsets.symmetric(vertical: 25.0),
