@@ -20,30 +20,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Widget _buildSocial(Function onTap, AssetImage logo) {
-      return GestureDetector(
-        onTap: onTap,
-        child: Container(
-          height: 60.0,
-          width: 60.0,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black26,
-                offset: Offset(0, 2),
-                blurRadius: 6.0,
-              ),
-            ],
-            image: DecorationImage(
-              image: logo,
-            ),
-          ),
-        ),
-      );
-    }
-
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -106,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   SizedBox(
-                                    height: 10.0,
+                                    height: 80.0,
                                   ),
                                   //Email
                                   Text(
@@ -188,6 +164,46 @@ class _LoginScreenState extends State<LoginScreen> {
                                       ),
                                     ],
                                   ),
+                                  //ESQUECI A SENHA
+                                  Container(
+                                    alignment: Alignment.centerRight,
+                                    child: FlatButton(
+                                      onPressed: () {
+                                        if (_emailController.text.isEmpty) {
+                                          _scaffoldKey.currentState
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                'Insira seu e-mail para recuperação',
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              backgroundColor: Colors.redAccent,
+                                              duration: Duration(seconds: 2),
+                                            ),
+                                          );
+                                        } else {
+                                          model.recoverPass(
+                                              _emailController.text);
+                                          _scaffoldKey.currentState
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                'Confira seu e-mail',
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              backgroundColor: Colors.green,
+                                              duration: Duration(seconds: 2),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      padding: EdgeInsets.only(right: 0.0),
+                                      child: Text(
+                                        'Esqueceu a senha ?',
+                                        style: kLabelStyle,
+                                      ),
+                                    ),
+                                  ),
                                   //BOTÃO DE ENTRAR
                                   Container(
                                     padding:
@@ -226,7 +242,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   //BOTÃO DE CRIAR CONTA
                                   Container(
                                     padding:
-                                        EdgeInsets.symmetric(vertical: 5.0),
+                                        EdgeInsets.symmetric(vertical: 20.0),
                                     width: double.infinity,
                                     child: RaisedButton(
                                       elevation: 5.0,
@@ -257,43 +273,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ],
                               ),
                             ),
-                            Column(
-                              children: <Widget>[
-                                Text(
-                                  '- OU -',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                                SizedBox(height: 20.0),
-                                Text(
-                                  'Entrar com',
-                                  style: kLabelStyle,
-                                ),
-                              ],
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(vertical: 30.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: <Widget>[
-                                  _buildSocial(
-                                    () => print('Logar com facebook'),
-                                    AssetImage(
-                                      'assets/images/facebook.jpg',
-                                    ),
-                                  ),
-                                  _buildSocial(
-                                    () async {},
-                                    AssetImage(
-                                      'assets/images/google.jpg',
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
                           ],
                         ),
                       ),
@@ -314,13 +293,15 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _onFail() {
-    _scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text(
-        'Login ou senha inválido',
-        textAlign: TextAlign.center,
+    _scaffoldKey.currentState.showSnackBar(
+      SnackBar(
+        content: Text(
+          'Login ou senha inválido',
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: Colors.redAccent,
+        duration: Duration(seconds: 2),
       ),
-      backgroundColor: Colors.redAccent,
-      duration: Duration(seconds: 2),
-    ));
+    );
   }
 }
