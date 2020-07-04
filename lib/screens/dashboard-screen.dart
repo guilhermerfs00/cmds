@@ -1,4 +1,5 @@
 import 'package:cmds/charts/linechart.dart';
+import 'package:cmds/widgets/custom_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -13,11 +14,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-            icon: Icon(Icons.menu),
-            onPressed: () {
-              //
-            }),
         title: Text("CMD"),
         actions: <Widget>[
           IconButton(
@@ -27,6 +23,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
               }),
         ],
       ),
+      drawer: CustomDrawer(),
       body: Container(
         color: Color(0xffE5E5E5),
         child: StaggeredGridView.count(
@@ -35,16 +32,15 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
           mainAxisSpacing: 12.0,
           children: <Widget>[
             InkWell(
-              onTap: (){
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => LineChart()));
+              onTap: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) => LineChart()));
               },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: lineChart("Grafico de Linha"),
               ),
             ),
-
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: pieChart("Pizza"),

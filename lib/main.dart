@@ -1,5 +1,5 @@
 import 'package:cmds/models/user_model.dart';
-import 'package:cmds/screens/login_screen.dart';
+import 'package:cmds/screens/dashboard-screen.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primaryColor: Color(0xFF5036D5),
         ),
-        home: LoginScreen(),
+        home: DashBoardScreen(),
       ),
     );
   }
