@@ -13,6 +13,8 @@ class UserModel extends Model {
 
   bool isLoading = false;
 
+  bool firstConection = false;
+
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
 
@@ -52,17 +54,24 @@ class UserModel extends Model {
       {@required String email,
       @required String pass,
       @required VoidCallback onSuccess,
+      @required VoidCallback firstConection,
       @required VoidCallback onFail}) async {
     isLoading = true;
     notifyListeners();
-
+    await _firstConection();
     _auth
         .signInWithEmailAndPassword(email: email, password: pass)
         .then((user) async {
       firebaseUser = user;
       await _loadCurrentUser();
-      onSuccess();
-      isLoading = false;
+
+      if (userData['firstConection'] == true) {
+        firstConection();
+        isLoading = false;
+      } else {
+        onSuccess();
+        isLoading = false;
+      }
       notifyListeners();
     }).catchError((e) {
       isLoading = false;
@@ -91,6 +100,11 @@ class UserModel extends Model {
         .collection('users')
         .document(firebaseUser.uid)
         .setData(userData);
+
+    await Firestore.instance
+        .collection('users')
+        .document(firebaseUser.uid)
+        .updateData({'firstConection': true});
   }
 
   Future<Null> _loadCurrentUser() async {
@@ -107,5 +121,14 @@ class UserModel extends Model {
       }
     }
     notifyListeners();
+  }
+
+  Future<Null> _firstConection() async {
+    if (userData['firstConection'] == true) {
+      await Firestore.instance
+          .collection('users')
+          .document(firebaseUser.uid)
+          .updateData({'firstConection': false});
+    }
   }
 }

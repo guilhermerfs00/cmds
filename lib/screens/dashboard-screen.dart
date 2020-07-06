@@ -1,8 +1,10 @@
 import 'package:cmds/charts/linechart.dart';
+import 'package:cmds/models/user_model.dart';
 import 'package:cmds/widgets/custom_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class DashBoardScreen extends StatefulWidget {
   @override
@@ -24,53 +26,62 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
         ],
       ),
       drawer: CustomDrawer(),
-      body: Container(
-        color: Color(0xffE5E5E5),
-        child: StaggeredGridView.count(
-          crossAxisCount: 4,
-          crossAxisSpacing: 12.0,
-          mainAxisSpacing: 12.0,
-          children: <Widget>[
-            InkWell(
-              onTap: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => LineChart()));
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: lineChart("Grafico de Linha"),
+      body: ScopedModelDescendant<UserModel>(
+        builder: (context, child, model) {
+          if (model.isLoading) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else
+            return Container(
+              color: Color(0xffE5E5E5),
+              child: StaggeredGridView.count(
+                crossAxisCount: 4,
+                crossAxisSpacing: 12.0,
+                mainAxisSpacing: 12.0,
+                children: <Widget>[
+                  InkWell(
+                    onTap: () {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => LineChart()));
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: lineChart("Grafico de Linha"),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: pieChart("Pizza"),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: infoChart("TV", "80Kw/h"),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: infoChart("Ar Condicionado", "80Kw/h"),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: infoChart("Geladeira", "80Kw/h"),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: infoChart("Computador", "80Kw/h"),
+                  ),
+                ],
+                staggeredTiles: [
+                  StaggeredTile.extent(4, 250.0),
+                  StaggeredTile.extent(4, 250.0),
+                  StaggeredTile.extent(2, 250.0),
+                  StaggeredTile.extent(2, 250.0),
+                  StaggeredTile.extent(2, 250.0),
+                  StaggeredTile.extent(2, 250.0),
+                ],
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: pieChart("Pizza"),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: infoChart("TV", "80Kw/h"),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: infoChart("Ar Condicionado", "80Kw/h"),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: infoChart("Geladeira", "80Kw/h"),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: infoChart("Computador", "80Kw/h"),
-            ),
-          ],
-          staggeredTiles: [
-            StaggeredTile.extent(4, 250.0),
-            StaggeredTile.extent(4, 250.0),
-            StaggeredTile.extent(2, 250.0),
-            StaggeredTile.extent(2, 250.0),
-            StaggeredTile.extent(2, 250.0),
-            StaggeredTile.extent(2, 250.0),
-          ],
-        ),
+            );
+        },
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'package:cmds/global.dart';
 import 'package:cmds/models/user_model.dart';
 import 'package:cmds/screens/dashboard-screen.dart';
 import 'package:cmds/screens/signup_screen.dart';
+import 'package:cmds/screens/welcome-screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -27,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          'CRIAR CONTA',
+          'INGRESSAR',
           style: TextStyle(
             color: Colors.white,
             fontFamily: 'OpenSans',
@@ -217,7 +218,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                               email: _emailController.text,
                                               pass: _passController.text,
                                               onSuccess: _onSuccess,
-                                              onFail: _onFail);
+                                              onFail: _onFail,
+                                              firstConection: _firstConection);
                                         }
                                       },
                                       padding: EdgeInsets.all(15.0),
@@ -290,6 +292,11 @@ class _LoginScreenState extends State<LoginScreen> {
   void _onSuccess() {
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => DashBoardScreen()));
+  }
+
+  void _firstConection() {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => WelcomeScreen()));
   }
 
   void _onFail() {
