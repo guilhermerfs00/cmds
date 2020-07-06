@@ -58,20 +58,22 @@ class UserModel extends Model {
       @required VoidCallback onFail}) async {
     isLoading = true;
     notifyListeners();
-    await _firstConection();
     _auth
         .signInWithEmailAndPassword(email: email, password: pass)
         .then((user) async {
       firebaseUser = user;
       await _loadCurrentUser();
 
-      if (userData['firstConection'] == true) {
-        firstConection();
-        isLoading = false;
-      } else {
-        onSuccess();
-        isLoading = false;
-      }
+      await _firstConection().then((valeu) {
+        if (valeu == true) {
+          firstConection();
+          isLoading = false;
+        } else {
+          onSuccess();
+          isLoading = false;
+        }
+      });
+
       notifyListeners();
     }).catchError((e) {
       isLoading = false;
@@ -123,12 +125,20 @@ class UserModel extends Model {
     notifyListeners();
   }
 
-  Future<Null> _firstConection() async {
-    if (userData['firstConection'] == true) {
-      await Firestore.instance
-          .collection('users')
-          .document(firebaseUser.uid)
-          .updateData({'firstConection': false});
-    }
+  Future<bool> _firstConection() async {
+    bool firstConection = false;
+
+    DocumentSnapshot docUser = await Firestore.instance
+        .collection('users')
+        .document(firebaseUser.uid)
+        .get();
+    firstConection = docUser.data['firstConection'];
+
+    await Firestore.instance
+        .collection('users')
+        .document(firebaseUser.uid)
+        .updateData({'firstConection': false});
+
+    return firstConection;
   }
 }
